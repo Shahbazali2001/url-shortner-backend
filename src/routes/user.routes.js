@@ -9,10 +9,22 @@ import db from "./../config/db/index.js";
 // Model Import
 import { usersTable } from "./../models/index.js";
 
+
+//Request Validation
+import { signUpRequestSchema } from "./../validation/request.validation.js";
+
+
 const router = express.Router();
 
 router.post("/signup", (req, res) => {
-  const { firstname, lastname, email, password } = req.body;
+  const validationResult = await signUpRequestSchema.parseAsync(req.body);
+
+  if(validationResult.error){
+    return res.status(400).json({ error: validationResult.error.message });
+  }
+
+  const { firstname, lastname, email, password } = validationResult.data;
+
 
   // check existing user
   const [existingUser] = await db
