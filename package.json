@@ -19,11 +19,16 @@
     "drizzle-orm": "^1.0.0-rc.4",
     "express": "^5.2.1",
     "nodemon": "^3.1.14",
-    "pg": "^8.23.0"
+    "pg": "^8.23.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^1.0.0-rc.4",
     "tsx": "^4.23.12"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.1": true
   }
 }
