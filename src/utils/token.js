@@ -16,8 +16,8 @@ export async function createUserToken(payload) {
 
 export function verifyToken(token) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    return decoded;
+    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    return payload;
   } catch (error) {
     return null;
   }
@@ -25,8 +25,8 @@ export function verifyToken(token) {
 
 export function decodeToken(token) {
   try {
-    const decoded = jwt.decode(token);
-    return decoded;
+    const decodedToken = jwt.decode(token);
+    return decodedToken;
   } catch (error) {
     return null;
   }
