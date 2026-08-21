@@ -1,6 +1,8 @@
 import express from "express";
 import { eq } from "drizzle-orm";
-import { randomBytes, createHmac } from "crypto";
+
+// Utils
+import { hashPasswordWithSalt } from "./../utils/hash.js";
 
 // Database Import
 import db from "./../config/db/index.js";
@@ -32,13 +34,9 @@ userRouter.post("/signup", async (req, res) => {
         .json({ error: `User with email ${email} already exists` });
     }
 
-    // Generate a random salt
-    const salt = randomBytes(16).toString("hex");
+    // Hash password with salt
 
-    // Hash password using HMAC with salt
-    const hashedPassword = createHmac("sha256", salt)
-      .update(password)
-      .digest("hex");
+    const { hashedPassword, salt } = hashPasswordWithSalt(password);
 
     // Create new user with both hash and salt stored
     const [newUser] = await db
