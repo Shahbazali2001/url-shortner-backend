@@ -6,3 +6,8 @@ export const signUpRequestSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6).max(32),
 });
+
+export const loginRequestSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6).max(32),
+});
