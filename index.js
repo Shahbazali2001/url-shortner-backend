@@ -2,6 +2,9 @@ import express from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./src/routes/user.routes.js";
 
+// Protected user/route Middleware
+import { authenticationMiddleware } from "./src/middlewares/auth.middleware.js";
+
 // Load environment variables
 dotenv.config();
 
@@ -10,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
+app.use(authenticationMiddleware);
 
 // Health check routes
 app.get("/", (req, res) => {
@@ -27,4 +31,3 @@ app.use("/api/user", userRouter);
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });
- 
