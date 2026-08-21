@@ -4,14 +4,18 @@ import { eq } from "drizzle-orm";
 // Utils
 import { hashPasswordWithSalt } from "./../utils/hash.js";
 
-// Database Import
-import db from "./../config/db/index.js";
-
-// Model Import
-import { usersTable } from "./../models/index.js";
-
 // Request Validation
 import { signUpRequestSchema } from "./../validation/request.validation.js";
+
+// User Service
+import {
+  getAllUsers,
+  getUserById,
+  getUserByEmail,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "./../services/user.service.js";
 
 export const userRouter = express.Router();
 
@@ -23,10 +27,7 @@ userRouter.post("/signup", async (req, res) => {
     const { firstname, lastname, email, password } = validationResult;
 
     // Check existing user
-    const [existingUser] = await db
-      .select({ id: usersTable.id })
-      .from(usersTable)
-      .where(eq(usersTable.email, email));
+    const existingUser = await getUserByEmail(email);
 
     if (existingUser) {
       return res
@@ -39,11 +40,13 @@ userRouter.post("/signup", async (req, res) => {
     const { hashedPassword, salt } = hashPasswordWithSalt(password);
 
     // Create new user with both hash and salt stored
-    const [newUser] = await db
-      .insert(usersTable)
-      .values({ firstname, lastname, email, password: hashedPassword, salt })
-      .returning({ id: usersTable.id });
-
+    const newUser = await createUser(
+      firstname,
+      lastname,
+      email,
+      hashedPassword,
+      salt,
+    );
     res.status(201).json({ data: { userId: newUser.id } });
   } catch (error) {
     res.status(400).json({
