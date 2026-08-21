@@ -1,8 +1,8 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 
 // Utils
 import { hashPasswordWithSalt } from "./../utils/hash.js";
+import { createUserToken } from "./../utils/token.js";
 
 // Request Validation
 import {
@@ -11,14 +11,7 @@ import {
 } from "./../validation/request.validation.js";
 
 // User Service
-import {
-  getAllUsers,
-  getUserById,
-  getUserByEmail,
-  createUser,
-  updateUser,
-  deleteUser,
-} from "./../services/user.service.js";
+import { getUserByEmail, createUser } from "./../services/user.service.js";
 
 export const userRouter = express.Router();
 
@@ -88,10 +81,13 @@ userRouter.post("/login", async (req, res) => {
     }
 
     // Generate JWT token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-      expiresIn: "5m",
-    });
-    res.status(200).json({ data: { token } });
+
+    const userToken = await createUserToken({ id: user.id });
+
+    // const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+    //   expiresIn: "5m",
+    // });
+    res.status(200).json({ data: { userToken } });
   } catch (error) {
     res.status(400).json({
       error: error instanceof Error ? error.message : "Invalid request",
