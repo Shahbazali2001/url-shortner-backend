@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./src/routes/user.routes.js";
+import { urlRouter } from "./src/routes/url.routes.js";
 
 // Protected user/route Middleware
 import { authenticationMiddleware } from "./src/middlewares/auth.middleware.js";
@@ -13,7 +14,6 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
-app.use(authenticationMiddleware);
 
 // Health check routes
 app.get("/", (req, res) => {
@@ -26,6 +26,9 @@ app.get("/health", (req, res) => {
 
 // API routes
 app.use("/api/user", userRouter);
+
+// Protected URL routes
+app.use(authenticationMiddleware, urlRouter);
 
 // Start server
 app.listen(PORT, () => {
